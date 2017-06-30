@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="angular.min.js"></script>
+	</head>
+
+	<body ng-app="app" ng-controller="myVC">
+		<div id="container">
+
+		</div>
+	</body>
+	<script>
+		var app = angular.module('app', []);
+
+		// 根据数据结构设计的数据模型(类)
+		function User(name, age) { this.name = name;
+			this.age = age; }
+
+		// 用来存放数据模型的数组,称之为模型数组
+		var users = [];
+
+		// 处理数据,将数据赋值给数据模型
+		function handleData(data)
+		{
+			var userArr = data; // data.user;
+			for (var i in userArr)
+			{
+				var userJson = userArr[i];
+				var user = new User();
+				user.name = userJson.name;
+				user.age = userJson.age;
+				// 把模型添加到模型数组中
+				users.push(user);
+			}
+			return users;
+		}
+
+		app.controller('myVC', function($scope, $http)
+		{
+			$http({ 'url': 'http://127.0.0.1:9966' })
+				.success(function(data)
+				{
+					$scope.data = data;
+					/*handleData()方法调用的时候,
+					 * data可能还没被后台返回,
+					 * 所以需要用$watch时时监测$scope.data的变化
+					 * */
+					$scope.$watch('data', function()
+					{
+						var usersModelArr =
+							handleData(data.users);
+					for (var i in usersModelArr)
+						{
+					var temp = usersModelArr[i];
+					var tag = '<span>' + temp.name + 
+				'</span>'+'<span>'+temp.age+'</span>'+'<br />';
+				
+				
+//可以使用模板引擎artTemplate.js的原生写法
+/* angular内置了和JQuery很像的JQlite,
+ * 在使用angular情况下,不可以使用JQuery.js
+ * JQLite里面是一些常用的JQ方法
+ */
+
+angular.element(document.getElementById('container')).append(tag);
+					}
+				});
+			});
+		});
+	</script>
+	<script>
+		// 同时监测两个属性的变化
+		// $scope.$watch('name + age',fn);
+		
+		// Angular1和Angular2就像Java和JAvaScript
+		
+	</script>
+	<script id="aaaa" type="text/html">
+		<if>
+		{{ data.user }}
+		</if>
+	</script>
+</html>
+
+
+
+
+
+
+
